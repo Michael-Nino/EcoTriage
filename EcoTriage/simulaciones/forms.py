@@ -2,6 +2,24 @@ from django import forms
 from .models import SimulacionAmbiental
 
 class SimulacionForm(forms.ModelForm):
+    # Opciones para el campo medio_transporte
+    TRANSPORTE_CHOICES = [
+        ("", "Seleccione un medio de transporte"),
+        ("A pie", "A pie"),
+        ("Bicicleta", "Bicicleta"),
+        ("Transporte público", "Transporte público"),
+        ("Auto particular", "Auto particular"),
+        ("Moto", "Moto"),
+        ("Otro", "Otro")
+    ]
+
+    medio_transporte = forms.ChoiceField(
+        choices=TRANSPORTE_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'form-control'
+        }),
+        label="Medio de transporte principal"
+    )
     """
     Formulario para crear simulaciones ambientales
     """
