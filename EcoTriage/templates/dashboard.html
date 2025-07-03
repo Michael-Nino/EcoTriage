@@ -1,0 +1,527 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if sin_datos %}
+<!-- Estado sin datos -->
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card card-eco text-center">
+            <div class="card-body py-5">
+                <i class="fas fa-seedling fa-4x text-success mb-4"></i>
+                <h2 class="text-muted mb-3">¡Bienvenido a EcoTriage!</h2>
+                <p class="lead text-muted mb-4">
+                    Aún no hay simulaciones registradas. Sé el primero en calcular tu huella de carbono
+                    y contribuir con datos ambientales para el Perú.
+                </p>
+                <a href="{% url 'registro' %}" class="btn btn-eco-primary btn-lg">
+                    <i class="fas fa-plus"></i> Crear Primera Simulación
+                </a>
+            </div>
+        </div>
+        
+        <!-- Información sobre la aplicación -->
+        <div class="row mt-4">
+            <div class="col-md-4 text-center mb-3">
+                <div class="card card-eco h-100">
+                    <div class="card-body">
+                        <i class="fas fa-calculator fa-2x text-primary mb-3"></i>
+                        <h5>Calcula tu Huella</h5>
+                        <p class="text-muted">Mide tu impacto ambiental diario en kg de CO₂</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-3">
+                <div class="card card-eco h-100">
+                    <div class="card-body">
+                        <i class="fas fa-chart-line fa-2x text-info mb-3"></i>
+                        <h5>Recibe Análisis</h5>
+                        <p class="text-muted">Obtén estadísticas detalladas y comparaciones</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-3">
+                <div class="card card-eco h-100">
+                    <div class="card-body">
+                        <i class="fas fa-lightbulb fa-2x text-warning mb-3"></i>
+                        <h5>Mejora Hábitos</h5>
+                        <p class="text-muted">Recibe recomendaciones personalizadas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+
+<!-- Dashboard Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-eco">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="text-success mb-2">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard EcoTriage
+                        </h1>
+                        <p class="text-muted mb-0">
+                            Monitoreo en tiempo real del impacto ambiental en Perú
+                        </p>
+                    </div>
+                    <div class="text-end">
+                        <div class="badge badge-eco fs-6">
+                            <i class="fas fa-sync-alt"></i> Actualizado en tiempo real
+                        </div>
+                        <div class="text-muted small mt-1">
+                            <i class="fas fa-clock"></i> Última actualización: ahora
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KPIs Principales -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card card-eco stat-card border-left-primary">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Participantes
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ analisis.total_simulaciones }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card card-eco stat-card border-left-success">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Huella Promedio
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ analisis.huella_promedio }} kg CO₂/día
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-leaf fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card card-eco stat-card border-left-info">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Ciudades Activas
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ analisis.ciudades_participantes }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-map-marker-alt fa-2x text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card card-eco stat-card border-left-warning">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Meta Nacional
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {% if analisis.diferencia_objetivo > 0 %}
+                                +{{ analisis.diferencia_objetivo }}
+                            {% else %}
+                                {{ analisis.diferencia_objetivo }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-flag fa-2x text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráficos y Análisis Principal -->
+<div class="row mb-4">
+    <!-- Gráfico de Huella de Carbono -->
+    <div class="col-xl-8 col-lg-7">
+        <div class="card card-eco">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-chart-area"></i> Comparación con Meta Nacional
+                </h6>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-day"></i> Hoy</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-week"></i> Esta semana</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-alt"></i> Este mes</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <!-- Comparación visual -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Huella Actual</span>
+                            <span class="badge bg-primary">{{ analisis.huella_promedio }} kg CO₂</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 20px;">
+                            {% widthratio analisis.huella_promedio 20 100 as porcentaje_actual %}
+                            <div class="progress-bar bg-primary" style="width: {{ porcentaje_actual }}%">
+                                Actual
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Meta Nacional</span>
+                            <span class="badge bg-success">{{ analisis.huella_objetivo }} kg CO₂</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 20px;">
+                            {% widthratio analisis.huella_objetivo 20 100 as porcentaje_objetivo %}
+                            <div class="progress-bar bg-success" style="width: {{ porcentaje_objetivo }}%">
+                                Meta
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Indicador de estado -->
+                    <div class="text-center">
+                        {% if analisis.diferencia_objetivo > 0 %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Estamos <strong>{{ analisis.diferencia_objetivo }} kg CO₂</strong> por encima de la meta nacional.
+                                ¡Podemos mejorar!
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle"></i>
+                                ¡Excelente! Estamos por debajo de la meta nacional.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Distribución de Usuarios -->
+    <div class="col-xl-4 col-lg-5">
+        <div class="card card-eco">
+            <div class="card-header bg-success text-white">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-chart-pie"></i> Clasificación de Usuarios
+                </h6>
+            </div>
+            <div class="card-body">
+                {% for clasificacion, cantidad in analisis.clasificaciones.items %}
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="mr-3">
+                            {% if clasificacion == 'Eco-Héroe' %}
+                                <i class="fas fa-trophy text-success"></i>
+                            {% elif clasificacion == 'Consciente' %}
+                                <i class="fas fa-thumbs-up text-info"></i>
+                            {% elif clasificacion == 'En Camino' %}
+                                <i class="fas fa-walking text-warning"></i>
+                            {% else %}
+                                <i class="fas fa-exclamation-circle text-danger"></i>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <span class="badge 
+                                {% if clasificacion == 'Eco-Héroe' %}classification-hero
+                                {% elif clasificacion == 'Consciente' %}classification-conscious
+                                {% elif clasificacion == 'En Camino' %}classification-improving
+                                {% else %}classification-needs
+                                {% endif %}">
+                                {{ clasificacion }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-weight-bold">{{ cantidad }}</span>
+                        <div class="text-muted small">
+                            {% widthratio cantidad analisis.total_simulaciones 100 as porcentaje %}
+                            {{ porcentaje }}%
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Análisis por Categorías -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card card-eco">
+            <div class="card-header bg-info text-white">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-car"></i> Análisis de Transporte
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <div class="border-right">
+                            <h4 class="text-primary">{{ analisis.km_promedio_dia }}</h4>
+                            <p class="text-muted mb-0">km/día promedio</p>
+                        </div>
+                    </div>
+                    <div class="col-6 text-center">
+                        <h4 class="text-info">{{ analisis.transporte_mas_usado }}</h4>
+                        <p class="text-muted mb-0">Más utilizado</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="small text-muted">
+                    <i class="fas fa-info-circle"></i>
+                    El transporte representa aproximadamente el 40% de la huella de carbono personal
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card card-eco">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-utensils"></i> Análisis de Alimentación
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <div class="border-right">
+                            <h4 class="text-danger">{{ analisis.carne_promedio_semana }}</h4>
+                            <p class="text-muted mb-0">veces carne/semana</p>
+                        </div>
+                    </div>
+                    <div class="col-6 text-center">
+                        <h4 class="text-success">{{ analisis.vegetales_promedio_semana }}</h4>
+                        <p class="text-muted mb-0">veces vegetales/semana</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="small text-muted">
+                    <i class="fas fa-info-circle"></i>
+                    Reducir el consumo de carne a 3-4 veces por semana puede reducir significativamente la huella
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recomendaciones y Simulaciones Recientes -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="card card-eco">
+            <div class="card-header bg-secondary text-white">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-clock"></i> Simulaciones Recientes
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Ciudad</th>
+                                <th>Edad</th>
+                                <th>Transporte</th>
+                                <th>Huella CO₂</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for simulacion in simulaciones_recientes %}
+                            <tr>
+                                <td>
+                                    <small class="text-muted">{{ simulacion.fecha|date:"d/m H:i" }}</small>
+                                </td>
+                                <td>
+                                    <i class="fas fa-map-marker-alt text-muted"></i>
+                                    {{ simulacion.ciudad }}
+                                </td>
+                                <td>{{ simulacion.edad }} años</td>
+                                <td>
+                                    <span class="badge bg-light text-dark">{{ simulacion.medio_transporte }}</span>
+                                </td>
+                                <td>
+                                    <!-- Aquí deberías calcular la huella para cada simulación -->
+                                    <span class="badge bg-info">~8.2 kg</span>
+                                </td>
+                                <td>
+                                    {% if simulacion.separa_residuos %}
+                                        <i class="fas fa-recycle text-success" title="Separa residuos"></i>
+                                    {% else %}
+                                        <i class="fas fa-times text-muted" title="No separa residuos"></i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center">
+                    <a href="{% url 'resultados' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-chart-line"></i> Ver Todos los Resultados
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card card-eco">
+            <div class="card-header bg-success text-white">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-lightbulb"></i> Recomendaciones Principales
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if analisis.recomendaciones %}
+                    {% for recomendacion in analisis.recomendaciones %}
+                    <div class="alert alert-light border-left-success mb-3">
+                        <div class="text-success">{{ recomendacion }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted">
+                        <i class="fas fa-check-circle fa-2x mb-3"></i>
+                        <p>¡Excelente! Los hábitos actuales están dentro de los parámetros recomendados.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Widget de acción rápida -->
+        <div class="card card-eco mt-3">
+            <div class="card-body text-center">
+                <h6 class="text-primary mb-3">
+                    <i class="fas fa-plus-circle"></i> Acción Rápida
+                </h6>
+                <p class="text-muted small mb-3">
+                    ¿Quieres contribuir con más datos para mejorar nuestro análisis?
+                </p>
+                <a href="{% url 'registro' %}" class="btn btn-eco-primary btn-sm">
+                    <i class="fas fa-plus"></i> Nueva Simulación
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer con estadísticas adicionales -->
+<div class="row">
+    <div class="col-12">
+        <div class="card card-eco">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="border-right">
+                            <h5 class="text-primary">{{ analisis.edad_promedio }}</h5>
+                            <p class="text-muted mb-0">Edad Promedio</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border-right">
+                            <h5 class="text-info">{{ analisis.horas_luz_promedio }}</h5>
+                            <p class="text-muted mb-0">Horas Luz/Día</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border-right">
+                            <h5 class="text-success">{{ analisis.porcentaje_separa_residuos }}%</h5>
+                            <p class="text-muted mb-0">Separa Residuos</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="text-warning">{{ analisis.ciudad_mas_participativa }}</h5>
+                        <p class="text-muted mb-0">Ciudad Más Activa</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .border-left-primary {
+        border-left: 0.25rem solid #4e73df !important;
+    }
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+    
+    .chart-area {
+        position: relative;
+        height: 200px;
+        width: 100%;
+    }
+    
+    .border-right {
+        border-right: 1px solid #e3e6f0;
+    }
+    
+    .text-xs {
+        font-size: 0.7rem;
+    }
+    
+    .border-left-success {
+        border-left: 3px solid #28a745 !important;
+    }
+    
+    @media (max-width: 768px) {
+        .border-right {
+            border-right: none;
+            border-bottom: 1px solid #e3e6f0;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}

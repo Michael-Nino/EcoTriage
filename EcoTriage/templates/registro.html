@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Header -->
+        <div class="card card-eco mb-4">
+            <div class="card-body text-center">
+                <h1 class="card-title text-success">
+                    <i class="fas fa-seedling fa-2x mb-3 d-block"></i>
+                    Simula tu Impacto Ambiental
+                </h1>
+                <p class="lead text-muted">
+                    Descubre tu huella de carbono y recibe recomendaciones personalizadas 
+                    para cuidar nuestro planeta.
+                </p>
+                {% if total_simulaciones > 0 %}
+                <div class="badge badge-eco">
+                    <i class="fas fa-users"></i> 
+                    {{ total_simulaciones }} persona{{ total_simulaciones|pluralize }} ya participaron
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <div class="card card-eco">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-clipboard-list"></i>
+                    Ingresa tus Hábitos Diarios
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Información Personal -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-user"></i> Información Personal
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.edad.id_for_label }}" class="form-label">
+                                    <i class="fas fa-birthday-cake"></i> Edad
+                                </label>
+                                {{ form.edad }}
+                                {% if form.edad.help_text %}
+                                    <div class="form-text">{{ form.edad.help_text }}</div>
+                                {% endif %}
+                                {% if form.edad.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.edad.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.ciudad.id_for_label }}" class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i> Ciudad
+                                </label>
+                                {{ form.ciudad }}
+                                {% if form.ciudad.help_text %}
+                                    <div class="form-text">{{ form.ciudad.help_text }}</div>
+                                {% endif %}
+                                {% if form.ciudad.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.ciudad.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transporte -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-info mb-3">
+                                <i class="fas fa-car"></i> Transporte
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.km_por_dia.id_for_label }}" class="form-label">
+                                    <i class="fas fa-route"></i> Kilómetros por día
+                                </label>
+                                {{ form.km_por_dia }}
+                                {% if form.km_por_dia.help_text %}
+                                    <div class="form-text">{{ form.km_por_dia.help_text }}</div>
+                                {% endif %}
+                                {% if form.km_por_dia.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.km_por_dia.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.medio_transporte.id_for_label }}" class="form-label">
+                                    <i class="fas fa-bus"></i> Medio de transporte
+                                </label>
+                                {{ form.medio_transporte }}
+                                {% if form.medio_transporte.help_text %}
+                                    <div class="form-text">{{ form.medio_transporte.help_text }}</div>
+                                {% endif %}
+                                {% if form.medio_transporte.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.medio_transporte.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alimentación -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-warning mb-3">
+                                <i class="fas fa-utensils"></i> Alimentación
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.carne_por_semana.id_for_label }}" class="form-label">
+                                    <i class="fas fa-drumstick-bite"></i> Veces que comes carne/semana
+                                </label>
+                                {{ form.carne_por_semana }}
+                                {% if form.carne_por_semana.help_text %}
+                                    <div class="form-text">{{ form.carne_por_semana.help_text }}</div>
+                                {% endif %}
+                                {% if form.carne_por_semana.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.carne_por_semana.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.vegetales_por_semana.id_for_label }}" class="form-label">
+                                    <i class="fas fa-carrot"></i> Veces que comes vegetales/semana
+                                </label>
+                                {{ form.vegetales_por_semana }}
+                                {% if form.vegetales_por_semana.help_text %}
+                                    <div class="form-text">{{ form.vegetales_por_semana.help_text }}</div>
+                                {% endif %}
+                                {% if form.vegetales_por_semana.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.vegetales_por_semana.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Energía y Residuos -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-danger mb-3">
+                                <i class="fas fa-bolt"></i> Energía y Residuos
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.horas_luz_dia.id_for_label }}" class="form-label">
+                                    <i class="fas fa-lightbulb"></i> Horas de luz artificial/día
+                                </label>
+                                {{ form.horas_luz_dia }}
+                                {% if form.horas_luz_dia.help_text %}
+                                    <div class="form-text">{{ form.horas_luz_dia.help_text }}</div>
+                                {% endif %}
+                                {% if form.horas_luz_dia.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.horas_luz_dia.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <div class="form-check mt-4">
+                                    {{ form.separa_residuos }}
+                                    <label for="{{ form.separa_residuos.id_for_label }}" class="form-check-label">
+                                        <i class="fas fa-recycle"></i> Separo mis residuos
+                                    </label>
+                                </div>
+                                {% if form.separa_residuos.help_text %}
+                                    <div class="form-text">{{ form.separa_residuos.help_text }}</div>
+                                {% endif %}
+                                {% if form.separa_residuos.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.separa_residuos.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Errores generales del formulario -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Botón de envío -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-eco-primary btn-lg">
+                            <i class="fas fa-calculator"></i>
+                            Calcular mi Huella de Carbono
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="card card-eco mt-4">
+            <div class="card-body">
+                <h5 class="card-title text-success">
+                    <i class="fas fa-info-circle"></i> ¿Por qué es importante?
+                </h5>
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <i class="fas fa-globe-americas fa-2x text-primary mb-2"></i>
+                        <h6>Cambio Climático</h6>
+                        <p class="small text-muted">El Perú es uno de los países más vulnerables al cambio climático.</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <i class="fas fa-mountain fa-2x text-info mb-2"></i>
+                        <h6>Puno y los Andes</h6>
+                        <p class="small text-muted">Los glaciales andinos se están derritiendo aceleradamente.</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <i class="fas fa-hands-helping fa-2x text-success mb-2"></i>
+                        <h6>Tu Acción Cuenta</h6>
+                        <p class="small text-muted">Cada acción individual suma para un futuro sostenible.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

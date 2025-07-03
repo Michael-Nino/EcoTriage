@@ -1,0 +1,377 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Header -->
+        <div class="card card-eco mb-4">
+            <div class="card-body text-center">
+                <h1 class="card-title text-primary">
+                    <i class="fas fa-chart-line fa-2x mb-3 d-block"></i>
+                    Resultados Generales de EcoTriage
+                </h1>
+                <p class="lead text-muted">
+                    Análisis completo de {{ analisis.total_simulaciones }} simulaciones ambientales
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if analisis.error %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-warning text-center">
+            <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+            <h4>{{ analisis.error }}</h4>
+            <p>Necesitamos más datos para generar estadísticas significativas.</p>
+            <a href="{% url 'registro' %}" class="btn btn-eco-primary">
+                <i class="fas fa-plus"></i> Agregar Primera Simulación
+            </a>
+        </div>
+    </div>
+</div>
+{% else %}
+
+<!-- Estadísticas Principales -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card card-eco stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                <h3 class="text-primary">{{ analisis.total_simulaciones }}</h3>
+                <p class="text-muted mb-0">Participantes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-eco stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-birthday-cake fa-2x text-info mb-2"></i>
+                <h3 class="text-info">{{ analisis.edad_promedio }}</h3>
+                <p class="text-muted mb-0">Edad Promedio</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-eco stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-map-marker-alt fa-2x text-warning mb-2"></i>
+                <h3 class="text-warning">{{ analisis.ciudades_participantes }}</h3>
+                <p class="text-muted mb-0">Ciudades</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-eco stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-leaf fa-2x text-success mb-2"></i>
+                <h3 class="text-success">{{ analisis.huella_promedio }}</h3>
+                <p class="text-muted mb-0">kg CO₂/día</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Huella de Carbono -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card card-eco">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-leaf"></i> Huella de Carbono Promedio
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Actual:</span>
+                    <span class="badge bg-primary fs-6">{{ analisis.huella_promedio }} kg CO₂/día</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Objetivo Perú:</span>
+                    <span class="badge bg-success fs-6">{{ analisis.huella_objetivo }} kg CO₂/día</span>
+                </div>
+                <div class="progress mb-3" style="height: 20px;">
+                    {% widthratio analisis.huella_promedio analisis.huella_objetivo 100 as porcentaje %}
+                    <div class="progress-bar {% if porcentaje <= 100 %}bg-success{% else %}bg-danger{% endif %}" 
+                         style="width: {% if porcentaje > 100 %}100{% else %}{{ porcentaje }}{% endif %}%">
+                        {{ porcentaje }}%
+                    </div>
+                </div>
+                {% if analisis.diferencia_objetivo > 0 %}
+                    <p class="text-danger mb-0">
+                        <i class="fas fa-arrow-up"></i>
+                        {{ analisis.diferencia_objetivo }} kg CO₂ por encima del objetivo
+                    </p>
+                {% else %}
+                    <p class="text-success mb-0">
+                        <i class="fas fa-arrow-down"></i>
+                        ¡Por debajo del objetivo nacional!
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-eco">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-users"></i> Clasificación de Usuarios
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for clasificacion, cantidad in analisis.clasificaciones.items %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge 
+                        {% if clasificacion == 'Eco-Héroe' %}classification-hero
+                        {% elif clasificacion == 'Consciente' %}classification-conscious
+                        {% elif clasificacion == 'En Camino' %}classification-improving
+                        {% else %}classification-needs
+                        {% endif %}">
+                        {{ clasificacion }}
+                    </span>
+                    <span class="fw-bold">{{ cantidad }} persona{{ cantidad|pluralize }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Análisis por Categorías -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card card-eco">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-car"></i> Transporte
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4 class="text-primary">{{ analisis.km_promedio_dia }}</h4>
+                        <p class="text-muted">km/día promedio</p>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-info">{{ analisis.transporte_mas_usado }}</h4>
+                        <p class="text-muted">Más usado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-eco">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-utensils"></i> Alimentación
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4 class="text-danger">{{ analisis.carne_promedio_semana }}</h4>
+                        <p class="text-muted">Carne/semana</p>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-success">{{ analisis.vegetales_promedio_semana }}</h4>
+                        <p class="text-muted">Vegetales/semana</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card card-eco">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt"></i> Energía
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <h3 class="text-warning">{{ analisis.horas_luz_promedio }}</h3>
+                <p class="text-muted">Horas de luz artificial por día</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-eco">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-recycle"></i> Reciclaje
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <h3 class="text-success">{{ analisis.porcentaje_separa_residuos }}%</h3>
+                <p class="text-muted">Separa sus residuos</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recomendaciones -->
+{% if analisis.recomendaciones %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-eco">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-lightbulb"></i> Recomendaciones Principales
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for recomendacion in analisis.recomendaciones %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-info mb-2">
+                            {{ recomendacion }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Análisis Geográfico -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-eco">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-map"></i> Participación por Región
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <h4 class="text-primary">{{ analisis.ciudades_participantes }}</h4>
+                        <p>Ciudades participantes</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="text-success">{{ analisis.ciudad_mas_participativa }}</h4>
+                        <p>Ciudad más activa</p>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'api_estadisticas' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-download"></i> Descargar Datos JSON
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Últimas Simulaciones -->
+<div class="row">
+    <div class="col-12">
+        <div class="card card-eco">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock"></i> Simulaciones Recientes
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if page_obj %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Ciudad</th>
+                                <th>Edad</th>
+                                <th>Transporte</th>
+                                <th>Huella CO₂</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for simulacion in page_obj %}
+                            <tr>
+                                <td>{{ simulacion.fecha|date:"d/m/Y H:i" }}</td>
+                                <td>{{ simulacion.ciudad }}</td>
+                                <td>{{ simulacion.edad }} años</td>
+                                <td>{{ simulacion.medio_transporte }}</td>
+                                <td>
+                                    {% for dato in analisis.datos_detallados %}
+                                        {% if dato.id == simulacion.id %}
+                                            <span class="badge bg-primary">{{ dato.huella_carbono_dia }} kg</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'reporte_individual' simulacion.id %}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> Ver
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Paginación">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+<!-- Call to Action -->
+<div class="row mt-4">
+    <div class="col-12 text-center">
+        <div class="card card-eco">
+            <div class="card-body">
+                <h5 class="text-success">¿Quieres contribuir con más datos?</h5>
+                <p class="text-muted">Ayúdanos a tener un mejor análisis del impacto ambiental en el Perú</p>
+                <a href="{% url 'registro' %}" class="btn btn-eco-primary">
+                    <i class="fas fa-plus"></i> Nueva Simulación
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

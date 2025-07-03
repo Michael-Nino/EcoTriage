@@ -1,0 +1,13 @@
+{
+  "files.associations": {
+    "random": "cpp"
+  },
+  "python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/venv/lib/python3.11/site-packages"
+  ],
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingModuleSource": "none",
+    "reportMissingImports": "none"
+  }
+}
