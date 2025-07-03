@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card card-eco mb-4">
+            <div class="card-body text-center">
+                <h1 class="card-title text-primary">
+                    <i class="fas fa-user-circle fa-2x mb-3 d-block"></i>
+                    Tu Reporte Ambiental
+                </h1>
+                <p class="lead text-muted">
+                    Este es tu resultado personalizado según tus respuestas.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card card-eco">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-leaf"></i> Huella de Carbono
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <h2 class="text-success">{{ huella_carbono }} kg CO₂/día</h2>
+                <p class="text-muted">Promedio nacional objetivo: {{ huella_objetivo }} kg CO₂/día</p>
+                <span class="badge bg-info">{{ clasificacion }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-eco">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-lightbulb"></i> Recomendación
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <p class="lead">{{ mensaje }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-eco">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle"></i> Detalles de tu simulación
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Ciudad:</strong> {{ reporte.simulacion.ciudad }}</li>
+                    <li class="list-group-item"><strong>Edad:</strong> {{ reporte.simulacion.edad }} años</li>
+                    <li class="list-group-item"><strong>Medio de transporte:</strong> {{ reporte.simulacion.medio_transporte }}</li>
+                    <li class="list-group-item"><strong>Kilómetros por día:</strong> {{ reporte.simulacion.km_por_dia }}</li>
+                    <li class="list-group-item"><strong>Carne por semana:</strong> {{ reporte.simulacion.carne_por_semana }}</li>
+                    <li class="list-group-item"><strong>Vegetales por semana:</strong> {{ reporte.simulacion.vegetales_por_semana }}</li>
+                    <li class="list-group-item"><strong>Horas de luz artificial por día:</strong> {{ reporte.simulacion.horas_luz_dia }}</li>
+                    <li class="list-group-item"><strong>¿Separa residuos?:</strong> {% if reporte.simulacion.separa_residuos %}Sí{% else %}No{% endif %}</li>
+                    <li class="list-group-item"><strong>Fecha de simulación:</strong> {{ reporte.simulacion.fecha|date:"d/m/Y H:i" }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12 text-center">
+        <a href="{% url 'resultados' %}" class="btn btn-eco-primary">
+            <i class="fas fa-arrow-left"></i> Volver a Resultados Generales
+        </a>
+    </div>
+</div>
+{% endblock %}

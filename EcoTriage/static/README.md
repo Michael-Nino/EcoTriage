@@ -28,6 +28,13 @@ static/
 ## Ventajas
 - Permite separar el código de presentación (CSS, JS) del backend.
 - Facilita la reutilización de recursos visuales y scripts en todo el proyecto.
+
+## Mejoras recientes (julio 2025)
+- Mejor contraste y accesibilidad en botones principales (`btn-eco-primary`).
+- Filas alternas y efecto hover más notorio en tablas para mejor lectura.
+- Iconos de acción más grandes y accesibles.
+- Mejoras visuales y de usabilidad en pantallas pequeñas.
+- Sombra sutil en tarjetas de recomendación.
 - Mejora el rendimiento al permitir el cacheo de archivos estáticos en el navegador del usuario.
 
 ## Notas

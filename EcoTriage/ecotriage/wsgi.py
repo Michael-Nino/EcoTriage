@@ -1,4 +1,3 @@
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecotriage.settings')
 
 # Configuración para el servidor WSGI (Web Server Gateway Interface)
 # Permite que Django funcione con servidores web tradicionales (como Gunicorn, uWSGI, Apache mod_wsgi)

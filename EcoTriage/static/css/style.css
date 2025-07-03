@@ -1,3 +1,49 @@
+/* ===== MEJORAS JULIO 2025: ACCESIBILIDAD Y USABILIDAD ===== */
+
+/* Mejor contraste para accesibilidad en botones principales */
+.btn-eco-primary {
+    outline: 2px solid #155724;
+    outline-offset: 2px;
+}
+.btn-eco-primary:focus {
+    box-shadow: 0 0 0 3px #b7f7c1;
+    outline: 2px solid #218838;
+}
+
+/* Mejoras visuales para tablas: filas alternas más notorias */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #eafaf1;
+}
+
+/* Animación sutil al pasar el mouse sobre filas de tabla */
+.table tbody tr:hover {
+    background-color: #d1f2eb !important;
+    transition: background 0.2s;
+}
+
+/* Iconos más grandes y accesibles en botones de acción */
+.btn-eco-primary i, .btn-outline-primary i {
+    font-size: 1.2em;
+    vertical-align: middle;
+}
+
+/* Mejoras para pantallas pequeñas: botones y tablas */
+@media (max-width: 400px) {
+    .btn-eco-primary {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.7rem;
+    }
+    .table-responsive {
+        font-size: 0.8rem;
+    }
+}
+
+/* Sombra sutil en tarjetas de recomendación */
+.alert-info {
+    box-shadow: 0 2px 8px rgba(54, 185, 204, 0.08);
+}
+
+/* Fin de mejoras julio 2025 */
 /* ===== ECOTRIAGE DASHBOARD STYLES ===== */
 
 /* Variables CSS para colores y espaciado consistente */

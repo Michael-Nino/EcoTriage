@@ -13,7 +13,8 @@ def procesar_simulaciones(datos_queryset):
         }
     
     # Convertir QuerySet a DataFrame de Pandas
-    df = pd.DataFrame(list(datos_queryset.values()))
+    # Convertir QuerySet a DataFrame de Pandas, asegurando que el campo 'id' esté presente
+    df = pd.DataFrame(list(datos_queryset.values('id', 'edad', 'km_por_dia', 'medio_transporte', 'carne_por_semana', 'vegetales_por_semana', 'horas_luz_dia', 'separa_residuos', 'ciudad', 'fecha')))
     
     # Análisis básico
     total_simulaciones = len(df)
@@ -102,6 +103,9 @@ def procesar_simulaciones(datos_queryset):
     huella_objetivo_peru = 8.5  # kg CO2 per cápita objetivo para Perú
     diferencia_objetivo = huella_promedio - huella_objetivo_peru
     
+    # Aseguramos que cada registro en datos_detallados tenga el campo 'id' para el template
+    datos_detallados = df.to_dict('records')[:10]
+    # Comentario: 'datos_detallados' ahora incluye el campo 'id' para que el template pueda hacer match con cada simulación
     return {
         'total_simulaciones': total_simulaciones,
         'edad_promedio': round(edad_promedio, 1),
@@ -118,7 +122,7 @@ def procesar_simulaciones(datos_queryset):
         'recomendaciones': recomendaciones,
         'diferencia_objetivo': round(diferencia_objetivo, 2),
         'huella_objetivo': huella_objetivo_peru,
-        'datos_detallados': df.to_dict('records')[:10]  # Últimos 10 registros para mostrar
+        'datos_detallados': datos_detallados  # Incluye 'id' para el template
     }
 
 def generar_reporte_individual(simulacion_id):

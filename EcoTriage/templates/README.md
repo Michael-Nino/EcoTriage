@@ -17,6 +17,7 @@ Esta carpeta es fundamental en cualquier proyecto Django, ya que aquí se almace
       dashboard.html           # Página principal del usuario
       registro.html            # Formulario de registro
       resultados.html          # Resultados y estadísticas
+      reporte_individual.html  # Reporte personalizado de cada simulación (nuevo)
       simulaciones/
           formulario.html      # Plantilla específica de la app simulaciones
           reporte.html         # Otra plantilla específica
@@ -28,6 +29,8 @@ Esta carpeta es fundamental en cualquier proyecto Django, ya que aquí se almace
 - Hace posible el diseño de sitios web dinámicos y personalizados para cada usuario.
 
 ## Notas
+
+- `reporte_individual.html`: Muestra el reporte personalizado de cada simulación, incluyendo huella de carbono, clasificación y recomendaciones. Se enlaza desde la tabla de resultados generales.
 - Django busca automáticamente en esta carpeta si está bien configurada en `settings.py`.
 - Puedes usar la etiqueta `{% extends 'base.html' %}` para heredar la estructura de una plantilla base.
 - Las plantillas pueden incluir archivos estáticos (CSS, JS, imágenes) usando `{% load static %}` y `{% static 'ruta/archivo' %}`.
